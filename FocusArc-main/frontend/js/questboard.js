@@ -1,4 +1,7 @@
 const MAX_QUESTS = 10;
+// Kept identical to the limits in backend/middleware/validate.js.
+const QUEST_TITLE_MAX = 20;
+const QUEST_DESCRIPTION_MAX = 200;
 const STATUS_LABELS = { TODO: 'To Do', IN_PROGRESS: 'In Progress', COMPLETED: 'Completed' };
 
 let quests = [];
@@ -192,7 +195,30 @@ function openQuestModal(quest) {
   form.elements.title.value = quest ? quest.title : '';
   form.elements.description.value = quest ? quest.description : '';
   document.getElementById('quest-modal-title').textContent = quest ? 'Edit Quest' : 'New Quest';
+  updateLengthErrors();
   backdrop.classList.add('open');
+}
+
+// maxlength stops typing past the limit; this tells the user why. A quest saved before the
+// limits existed can still be longer, so that case asks them to shorten it.
+function lengthError(value, max, label) {
+  const length = value.trim().length;
+  if (length > max) return `${label} must be ${max} characters or fewer (currently ${length}).`;
+  if (value.length >= max) return `${label} has reached the ${max}-character limit.`;
+  return null;
+}
+
+function updateLengthErrors() {
+  const form = document.getElementById('quest-form');
+  const errors = [
+    ['title-error', lengthError(form.elements.title.value, QUEST_TITLE_MAX, 'Title')],
+    ['description-error', lengthError(form.elements.description.value, QUEST_DESCRIPTION_MAX, 'Description')],
+  ];
+  errors.forEach(([id, message]) => {
+    const el = document.getElementById(id);
+    el.textContent = message || '';
+    el.hidden = !message;
+  });
 }
 
 function closeQuestModal() {
@@ -208,6 +234,11 @@ async function submitQuestForm(event) {
 
   if (!title || !description) {
     showToast('Title and description are required.', { isError: true });
+    return;
+  }
+  if (title.length > QUEST_TITLE_MAX || description.length > QUEST_DESCRIPTION_MAX) {
+    updateLengthErrors();
+    showToast(`Keep the title to ${QUEST_TITLE_MAX} and the description to ${QUEST_DESCRIPTION_MAX} characters.`, { isError: true });
     return;
   }
 
@@ -312,6 +343,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (event.target.id === 'quest-modal-backdrop') closeQuestModal();
   });
   document.getElementById('quest-form').addEventListener('submit', submitQuestForm);
+  document.getElementById('quest-form').addEventListener('input', updateLengthErrors);
 
   document.querySelectorAll('.tab').forEach((tab) => {
     tab.addEventListener('click', () => {
