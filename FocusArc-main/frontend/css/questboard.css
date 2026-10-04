@@ -1,0 +1,278 @@
+
+.c-hero {
+  align-items: stretch;
+  /* Shorter banner than the shared default (220px), so quests sit higher on the page. */
+  min-height: 170px;
+}
+
+.ch-img {
+  width: 150px;
+  height: 170px;
+}
+
+.qt-card {
+  align-items: center;
+  text-align: center;
+  margin: 16px 16px 16px 0;
+  padding: 14px 22px;
+}
+
+@media (max-width: 700px) {
+  .c-hero {
+    min-height: 0;
+  }
+
+  .ch-img {
+    width: 100%;
+    height: 140px;
+  }
+
+  .qt-card {
+    margin: 0 16px 16px;
+  }
+}
+
+.qt-card > .qt-mark {
+  display: none;
+}
+
+.ch-quote {
+  max-width: 560px;
+}
+
+.qt-text::before,
+.qt-text::after {
+  color: var(--accent);
+  font-size: 1.3rem;
+  font-style: normal;
+  line-height: 1;
+  vertical-align: -0.05em;
+}
+
+.qt-text::before {
+  content: '\201C';
+  margin-right: 3px;
+}
+
+.qt-text::after {
+  content: '\201D';
+  margin-left: 3px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 5px;
+}
+
+.tab {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tab.active {
+  background: var(--bg-tertiary);
+  color: var(--accent);
+  box-shadow: 0 0 12px var(--glow);
+}
+
+.q-badge {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.q-badge strong {
+  color: var(--text-primary);
+}
+
+.q-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quest-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quest-card:hover {
+  border-color: var(--border);
+  box-shadow: 0 0 22px -10px var(--glow);
+}
+
+.q-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.q-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.q-title {
+  font-size: 1.02rem;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+
+.q-desc {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.87rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.q-acts {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.q-select {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 0.78rem;
+  font-family: inherit;
+}
+
+.q-study {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-tertiary);
+  color: var(--accent-secondary);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.88rem;
+  box-shadow: 0 0 14px var(--glow);
+}
+
+.timer svg {
+  width: 15px;
+  height: 15px;
+}
+
+.s-btn {
+  font-size: 0.85rem;
+  padding: 9px 18px;
+}
+
+.m-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: 20px;
+}
+
+.m-bg.open {
+  display: flex;
+}
+
+.modal {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 0 60px -18px var(--glow);
+}
+
+.modal h2 {
+  margin: 0 0 18px;
+  font-size: 1.2rem;
+}
+
+.modal textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 16px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 90px;
+  margin-bottom: 14px;
+}
+
+.modal textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--glow);
+}
+
+.m-acts {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+@media (max-width: 480px) {
+  .tab {
+    padding: 8px 10px;
+  }
+
+  .q-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .q-acts {
+    justify-content: flex-end;
+  }
+
+  .q-study {
+    flex-wrap: wrap;
+  }
+}

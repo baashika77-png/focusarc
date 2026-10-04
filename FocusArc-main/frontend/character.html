@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Character Guide — FocusArc</title>
+  <link rel="icon" href="/assets/logo/logo.png.png" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <script src="js/theme-init.js"></script>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/character.css?v=2" />
+</head>
+<body>
+  <div class="shell">
+    <div id="sidebar-root"></div>
+
+    <main class="main">
+      <div class="p-head">
+        <h1>Study Companion</h1>
+      </div>
+
+      <section class="card c-hero">
+        <div class="ch-char">
+          <div class="ch-wrap">
+            <img class="ch-img" id="hero-image" src="" alt="" hidden />
+          </div>
+          <div class="ch-id" id="hero-identity" hidden>
+            <h2 class="ch-name" id="hero-name"></h2>
+            <span class="ch-accent" aria-hidden="true"></span>
+            <p class="ch-desc" id="hero-description"></p>
+          </div>
+        </div>
+
+        <div class="ch-div" aria-hidden="true"></div>
+
+        <div class="qt-card">
+          <div class="qt-mark">&ldquo;</div>
+          <p class="ch-quote" id="hero-quote">Loading your study companion…</p>
+        </div>
+      </section>
+
+      <section class="card c-pick">
+        <h3>Choose Your Companion</h3>
+        <p class="cp-sub">Every arc has a hero , Pick yours.</p>
+        <div class="c-grid" id="companion-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/vendor/lucide.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/character.js"></script>
+</body>
+</html>

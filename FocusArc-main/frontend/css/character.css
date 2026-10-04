@@ -1,0 +1,244 @@
+
+.c-hero {
+  min-height: 0;
+  align-items: stretch;
+  padding: 0;
+}
+
+.ch-char {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 0 0 38%;
+  max-width: 340px;
+  min-width: 260px;
+  padding: 16px 20px 12px;
+}
+
+.ch-wrap {
+  width: 108px;
+  height: 166px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 0 46px -6px var(--glow);
+  flex-shrink: 0;
+}
+
+.ch-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ch-id {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.ch-name {
+  margin: 0;
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  text-shadow: 0 0 26px var(--glow);
+}
+
+.ch-accent {
+  display: block;
+  width: 36px;
+  height: 3px;
+  border-radius: 999px;
+  margin: 5px 0;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--glow);
+}
+
+.ch-desc {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 240px;
+}
+
+.ch-div {
+  width: 1px;
+  align-self: stretch;
+  flex-shrink: 0;
+  margin: 14px 0;
+  background: linear-gradient(180deg, transparent, var(--border), transparent);
+}
+
+.qt-card {
+  flex: 1 1 auto;
+  margin: 12px 20px 12px 0;
+  padding: 12px 24px;
+  box-shadow: 0 0 56px -12px var(--glow);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* The shared markup's block-level opening mark is hidden in favor of a matching
+   ::before/::after pair anchored directly to the quote text below, so both marks share
+   identical size/style/color and sit naturally against the text instead of one floating
+   above-left at a different scale than the other. */
+.qt-card > .qt-mark {
+  display: none;
+}
+
+.ch-quote {
+  max-width: 480px;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.qt-text::before,
+.qt-text::after {
+  color: var(--accent);
+  font-size: 1.3rem;
+  font-style: normal;
+  line-height: 1;
+  vertical-align: -0.05em;
+}
+
+.qt-text::before {
+  content: '\201C';
+  margin-right: 3px;
+}
+
+.qt-text::after {
+  content: '\201D';
+  margin-left: 3px;
+}
+
+.c-pick {
+  padding: 26px 24px;
+}
+
+.c-pick h3 {
+  text-align: center;
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+}
+
+.cp-sub {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin: 0 0 24px;
+}
+
+.c-grid {
+  display: grid;
+  /* 100px = the 84px avatar plus its padding, so all five fit on one row down to
+     laptop widths instead of leaving one companion stranded on a second row. */
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 18px;
+}
+
+.c-opt {
+  position: relative;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.c-opt:hover {
+  background: var(--bg-tertiary);
+}
+
+.co-wrap {
+  position: relative;
+}
+
+.co-img {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.c-opt.selected .co-img {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--glow);
+}
+
+.co-check {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px var(--glow);
+}
+
+.co-check svg {
+  width: 12px;
+  height: 12px;
+}
+
+.co-name {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+}
+
+.co-trait {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 700px) {
+  .c-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ch-char {
+    flex-basis: auto;
+    max-width: none;
+    min-width: 0;
+    width: 100%;
+    padding: 18px 18px 10px;
+  }
+
+  /* Keep the portrait's tall ratio on mobile too, just capped narrower — stretching it to
+     full viewport width at this ratio would make it excessively tall on phones. */
+  .ch-wrap {
+    width: 100%;
+    max-width: 156px;
+    height: 202px;
+    margin: 0 auto;
+  }
+
+  .ch-div {
+    display: none;
+  }
+
+  .qt-card {
+    flex: 1 1 auto;
+    margin: 0 18px 16px;
+    padding: 14px 18px;
+    min-height: 0;
+  }
+}

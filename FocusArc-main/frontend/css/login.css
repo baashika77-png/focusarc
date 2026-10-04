@@ -1,0 +1,363 @@
+body.a-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.a-shell {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.vis {
+  flex: 1.15;
+  min-width: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(160px, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  align-items: stretch;
+  padding: 60px 0 0 60px;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  background-image: var(--auth-bg, none);
+  background-size: cover;
+  background-position: center;
+}
+
+/* Text lives in its own column so it can never share horizontal space with
+   .a-col — the character is free to grow tall/prominent without
+   the copy reflowing into it. */
+.vis-content {
+  grid-column: 1;
+  grid-row: 1;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding-right: 32px;
+  padding-bottom: 60px;
+}
+
+.a-col {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.vis::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(180deg, rgba(3, 6, 7, 0.25), rgba(3, 6, 7, 0.55) 65%, rgba(3, 6, 7, 0.82));
+}
+
+.vis-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  z-index: 2;
+}
+
+.b-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  /* Logo art is a solid-black square (assets/logo/) — screen blend drops the black so only
+     the glowing mark shows against the photo background. */
+  mix-blend-mode: screen;
+}
+
+.b-spark {
+  color: var(--accent);
+  font-size: 1.1rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px var(--glow));
+}
+
+.b-text {
+  font-size: 2.1rem;
+  color: var(--text-primary);
+}
+
+.vis-tag {
+  z-index: 2;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 34px;
+}
+
+.vis-copy {
+  z-index: 2;
+  font-size: 1.55rem;
+  line-height: 1.45;
+  color: var(--text-primary);
+  max-width: 420px;
+  margin-bottom: 8px;
+}
+
+.vis-copy span {
+  color: var(--accent);
+}
+
+.a-char {
+  position: absolute;
+  right: 6%;
+  bottom: 0;
+  width: min(92%, 380px);
+  z-index: 1;
+  opacity: 0.96;
+  pointer-events: none;
+  filter: drop-shadow(0 12px 30px var(--glow));
+  -webkit-mask-image: linear-gradient(to top, black 88%, transparent 100%);
+  mask-image: linear-gradient(to top, black 88%, transparent 100%);
+}
+
+/* Used when the character asset isn't a transparent cutout (its own background is a
+   dark/gradient rectangle) — fades every edge so the rectangle doesn't read as a hard photo. */
+.a-blend {
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 55%, black 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 80% at 50% 55%, black 55%, transparent 100%);
+}
+
+.a-leaf {
+  position: absolute;
+  color: var(--accent);
+  opacity: 0.55;
+  animation: focusarc-drift 9s ease-in-out infinite;
+}
+
+@keyframes focusarc-drift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(24px) rotate(18deg);
+  }
+}
+
+.a-form {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vh, 40px) clamp(16px, 4vw, 40px);
+  background: var(--bg-primary);
+}
+
+.a-card {
+  width: 100%;
+  min-width: 0;
+  max-width: 400px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: clamp(20px, 4vh, 40px) 34px;
+  text-align: center;
+  box-shadow: 0 0 60px -14px var(--glow);
+}
+
+.ac-icon {
+  width: clamp(44px, 6vh, 62px);
+  height: clamp(44px, 6vh, 62px);
+  margin: 0 auto clamp(10px, 2vh, 18px);
+  color: var(--accent);
+  object-fit: contain;
+  mix-blend-mode: screen;
+}
+
+.a-card h1 {
+  font-size: clamp(1.2rem, 1rem + 1vh, 1.55rem);
+  margin: 0 0 clamp(4px, 1vh, 6px);
+}
+
+.ac-sub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0 0 clamp(14px, 3vh, 26px);
+}
+
+.ac-sub span {
+  color: var(--accent-secondary);
+}
+
+.a-card form {
+  text-align: left;
+}
+
+/* Scoped override of the shared .field spacing (global.css) so the auth card can shrink
+   on short viewports without affecting .field usage elsewhere in the app. */
+.a-card .field {
+  padding: clamp(10px, 1.6vh, 13px) 16px;
+  margin-bottom: clamp(8px, 1.6vh, 14px);
+}
+
+/* Flex items (including <input>) default to min-width:auto, which floors them at their
+   intrinsic content width and blocks shrinking below it — on narrow viewports this pushed
+   .field, and the card containing it, wider than the viewport. */
+.a-card .field input {
+  min-width: 0;
+}
+
+.a-card .field.invalid {
+  border-color: var(--danger);
+}
+
+.a-card .btn-p {
+  width: 100%;
+  margin-top: clamp(4px, 1vh, 6px);
+}
+
+.a-switch {
+  margin-top: clamp(12px, 3vh, 22px);
+  padding-top: clamp(10px, 2vh, 18px);
+  border-top: 1px solid var(--border);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+  .vis {
+    display: none;
+  }
+
+  .a-form {
+    padding: 24px;
+  }
+}
+
+/* Very short viewports (landscape phones, small windows): the card's own padding/gaps
+   already shrink via clamp() above, but on the shortest realistic viewports that alone
+   isn't enough to avoid the page growing past the viewport — so also drop the purely
+   decorative icon and tighten the subtitle gap here instead of clipping content. */
+@media (max-height: 620px) {
+  .ac-icon {
+    display: none;
+  }
+
+  .ac-sub {
+    margin-bottom: 12px;
+  }
+
+  .a-form {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .a-card {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------
+   Login-only layout. signup.css @imports this file, so everything below is scoped to
+   body.login to keep the Signup page exactly as it was.
+   --------------------------------------------------------------------------------------- */
+
+/* Single fixed-height viewport — no page scroll in either axis. */
+html:has(body.login),
+body.login {
+  height: 100%;
+  overflow: hidden;
+}
+
+body.login {
+  min-height: 0;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.login .a-shell {
+  min-height: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.login .vis {
+  padding: 0 0 0 clamp(32px, 5vw, 72px);
+}
+
+.login .vis-content {
+  align-items: flex-start;
+  gap: 18px;
+  padding: 0 32px 0 0;
+}
+
+.login .vis-brand {
+  margin: 0;
+  line-height: 1;
+}
+
+.login .b-text {
+  line-height: 1;
+}
+
+.login .vis-tag {
+  margin: 0;
+  padding-left: 2px;
+}
+
+.login .vis-copy {
+  margin: 6px 0 0;
+}
+
+/* Clear vertical divider between the art section and the login section */
+.login .a-form {
+  border-left: 1px solid var(--border);
+  box-shadow: -1px 0 18px -6px var(--glow);
+  position: relative;
+  z-index: 3;
+}
+
+.login .a-card form {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.6vh, 14px);
+}
+
+/* Dark teal/black input surface instead of a bright field */
+.login .a-card .field {
+  margin: 0;
+  background: rgba(3, 14, 15, 0.85);
+  background: color-mix(in srgb, var(--bg-primary) 92%, var(--accent) 8%);
+  border-color: var(--border);
+}
+
+.login .a-card .field input {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+/* Browser autofill paints inputs bright white/blue — repaint with the dark field color. */
+.login .a-card .field input:-webkit-autofill,
+.login .a-card .field input:-webkit-autofill:hover,
+.login .a-card .field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-primary);
+  caret-color: var(--text-primary);
+  -webkit-box-shadow: 0 0 0 1000px #071214 inset;
+  box-shadow: 0 0 0 1000px #071214 inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
+.login .a-card .btn-p {
+  margin: clamp(4px, 1vh, 6px) 0 0;
+}
+
+@media (max-width: 900px) {
+  .login .a-form {
+    border-left: none;
+    box-shadow: none;
+  }
+}

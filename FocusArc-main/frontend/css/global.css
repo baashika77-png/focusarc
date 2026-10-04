@@ -1,0 +1,541 @@
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 500 600;
+  font-display: optional;
+  src: url('/assets/fonts/cinzel.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: optional;
+  src: url('/assets/fonts/inter.woff2') format('woff2');
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  background-image: var(--theme-bg-image), radial-gradient(ellipse at 22% 12%, var(--glow), transparent 55%),
+    radial-gradient(ellipse at 82% 88%, var(--bg-tertiary), transparent 55%);
+  background-size: cover, auto, auto;
+  background-position: center, center, center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  position: relative;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(3, 6, 7, 0.6), rgba(3, 6, 7, 0.82));
+  z-index: 0;
+  pointer-events: none;
+}
+
+.shell,
+.a-shell {
+  position: relative;
+  z-index: 2;
+}
+
+h1,
+h2,
+h3,
+.brand {
+  font-family: 'Cinzel', 'Inter', serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-secondary);
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--glow);
+}
+
+
+.shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.side {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 18px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.side-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 0 6px;
+}
+
+.sb-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  flex-shrink: 0;
+  /* Logo art is a solid-black square (assets/logo/) — screen blend drops the black so only
+     the glowing mark shows against the sidebar background, on every theme. */
+  mix-blend-mode: screen;
+}
+
+.sb-text {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.side-tag {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 0 6px;
+  margin-bottom: 28px;
+}
+
+.nav-ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.nav-a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.nav-a svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.nav-a:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.nav-a.active {
+  color: var(--accent);
+  background: var(--bg-tertiary);
+  border-color: var(--border);
+  box-shadow: 0 0 16px var(--glow);
+}
+
+.nav-out {
+  margin-top: auto;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  /* On wide/fullscreen displays, cap the content at 1400px and centre it in the space
+     beside the sidebar instead of stretching cards and progress bars edge to edge. */
+  padding: 36px max(40px, calc((100% - 1400px) / 2));
+}
+
+.p-head {
+  margin-bottom: 28px;
+}
+
+.p-head h1 {
+  font-size: 1.7rem;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* ---------------------------------------------------------------- mobile nav */
+
+.nav-tog {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 40;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 8px;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+}
+
+.side-bg {
+  display: none;
+}
+
+@media (max-width: 880px) {
+  .shell {
+    /* Below this width .side is fixed/off-canvas (see below), so the reserved 240px
+       column would just be dead space squeezing .main — collapse to one column. */
+    grid-template-columns: 1fr;
+    /* #sidebar-root is now an empty first row; without this, min-height: 100vh splits the
+       spare height between it and .main and pushes short pages down. */
+    align-content: start;
+  }
+
+  .nav-tog {
+    display: flex;
+  }
+
+  .side {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .side.open {
+    transform: translateX(0);
+  }
+
+  .side-bg.open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 45;
+  }
+
+  .main {
+    padding: 84px 20px 40px;
+  }
+}
+
+/* ---------------------------------------------------------------- components */
+
+.card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.94rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-p {
+  background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+  color: #05090a;
+  box-shadow: 0 0 22px var(--glow);
+}
+
+.btn-p:hover {
+  box-shadow: 0 0 30px var(--glow);
+}
+
+.btn-s {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.btn-s:hover {
+  background: var(--bg-tertiary);
+}
+
+.btn-d {
+  background: transparent;
+  border-color: rgba(248, 113, 113, 0.4);
+  color: var(--danger);
+}
+
+.btn-d:hover {
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 16px;
+  margin-bottom: 14px;
+}
+
+.field svg {
+  width: 18px;
+  height: 18px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.field input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.field input::placeholder {
+  color: var(--text-secondary);
+}
+
+.field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--glow);
+}
+
+.f-err {
+  color: var(--danger);
+  font-size: 0.82rem;
+  margin: -8px 0 12px 4px;
+}
+
+.i-btn {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.i-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.i-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.i-btn.danger:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* Shared "big character portrait + quote card" hero — used by Quest Board (compact) and
+   Character Guide (full-size, via its own min-height/image-size override). */
+.c-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 0;
+  margin-bottom: 26px;
+  overflow: hidden;
+  min-height: 220px;
+  background:
+    radial-gradient(ellipse at 20% 100%, var(--glow), transparent 65%),
+    var(--bg-secondary);
+}
+
+.ch-img {
+  width: 190px;
+  height: 220px;
+  object-fit: cover;
+  flex-shrink: 0;
+  -webkit-mask-image: linear-gradient(to right, black 55%, transparent 100%);
+  mask-image: linear-gradient(to right, black 55%, transparent 100%);
+}
+
+.qt-card {
+  flex: 1;
+  margin: 22px 22px 22px 0;
+  padding: 18px 22px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.qt-mark {
+  color: var(--accent);
+  font-size: 1.6rem;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.ch-quote {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--text-primary);
+  transition: opacity 0.4s ease;
+  margin: 0;
+}
+
+/* The current character's name, shown directly under the quote on both pages. */
+.qt-author {
+  display: block;
+  margin-top: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  text-shadow: 0 0 12px var(--glow);
+}
+
+@media (max-width: 700px) {
+  .c-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ch-img {
+    width: 100%;
+    height: 180px;
+    -webkit-mask-image: linear-gradient(to top, black 55%, transparent 100%);
+    mask-image: linear-gradient(to top, black 55%, transparent 100%);
+  }
+
+  .qt-card {
+    margin: 0 16px 16px;
+  }
+}
+
+.empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-secondary);
+}
+
+.empty h3 {
+  color: var(--text-primary);
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 20px;
+  color: var(--text-primary);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  max-width: 320px;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.error {
+  border-color: rgba(248, 113, 113, 0.4);
+  color: var(--danger);
+}
+
+.fade {
+  animation: focusarc-fade-in 0.35s ease both;
+}
+
+@keyframes focusarc-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
