@@ -29,6 +29,7 @@ function escapeHtml(str) {
 async function requireAuth() {
   try {
     const user = await api.get('/auth/me');
+    if (user.role === 'ADMIN' && typeof showAdminNavLink === 'function') showAdminNavLink();
     return user;
   } catch (err) {
     window.location.href = 'login.html';
@@ -72,71 +73,74 @@ function wireLoginForm() {
   });
 }
 
-// Email check (kept identical in backend/middleware/validate.js and frontend/js/auth.js).
-// Valid format, plus a spelling check for well-known providers: "gmial.com" or "gmail.con"
-// is almost always a typo, so it is rejected with a suggested fix.
-const EMAIL_RE = /^[a-z0-9_%+-]+(\.[a-z0-9_%+-]+)*@([a-z0-9-]+\.)+[a-z]{2,}$/;
-const EMAIL_PROVIDERS = { gmail: 'gmail.com', yahoo: 'yahoo.com', hotmail: 'hotmail.com', outlook: 'outlook.com', icloud: 'icloud.com' };
-const REAL_LOOKALIKES = ['mail', 'email', 'ymail', 'gmx', 'cloud']; // real providers that look like typos
-const COM_TYPOS = ['con', 'cmo', 'cm', 'om', 'comm', 'coom', 'vom', 'xom', 'cpm'];
-
-// Letters changed, added, removed or swapped to turn a into b.
-function editDistance(a, b) {
-  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
-  for (let j = 1; j <= b.length; j++) d[0][j] = j;
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
-      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
-    }
-  }
-  return d[a.length][b.length];
+// Username and email checks (kept identical in backend/middleware/validate.js and frontend/js/auth.js).
+// A username is a name: 2–50 letters A–Z only (50 matches the users table column).
+function usernameError(username) {
+  const value = (username || '').trim();
+  if (!value) return 'Username is required.';
+  if (!/^[A-Za-z]+$/.test(value)) return 'Username can only contain letters (A–Z), with no numbers, spaces or symbols.';
+  if (value.length < 2) return 'Username must be at least 2 letters.';
+  if (value.length > 50) return 'Username must be 50 letters or fewer.';
+  return null;
 }
 
-function emailError(email) {
-  const value = (email || '').trim().toLowerCase();
-  if (!EMAIL_RE.test(value) || value.length > 255) return 'Enter a valid email address, like name@gmail.com.';
-  const [local, domain] = value.split('@');
-  const name = domain.split('.')[0];
-  const ending = domain.slice(name.length + 1);
-  const suggest = (fixed) => `Check the spelling — did you mean ${local}@${fixed}?`;
+// Only Gmail addresses shaped like "richa123@gmail.com": one or more letters, then one or more
+// numbers, then exactly "@gmail.com". No dots, symbols or letters after the numbers.
+const EMAIL_RE = /^[A-Za-z]+[0-9]+@gmail\.com$/;
 
-  if (EMAIL_PROVIDERS[name]) {
-    if (name === 'gmail' && ending !== 'com') return suggest('gmail.com');
-    if (COM_TYPOS.includes(ending) || ending === 'co') return suggest(EMAIL_PROVIDERS[name]);
-    return null;
+function emailError(email) {
+  const value = (email || '').trim();
+  if (/\s/.test(value)) return 'Email cannot contain spaces.';
+  if (EMAIL_RE.test(value) && value.length <= 255) return null;
+  if (!value.endsWith('@gmail.com') || value.indexOf('@') !== value.length - '@gmail.com'.length) {
+    return 'Enter a Gmail address ending in @gmail.com, like richa123@gmail.com.';
   }
-  if (!REAL_LOOKALIKES.includes(name)) {
-    for (const provider of Object.keys(EMAIL_PROVIDERS)) {
-      const allowed = provider === 'gmail' || provider.length >= 7 ? 2 : 1;
-      if (name.length >= 3 && editDistance(name, provider) <= allowed) return suggest(EMAIL_PROVIDERS[provider]);
-    }
-  }
-  if (COM_TYPOS.includes(ending)) return suggest(`${name}.com`);
-  return null;
+  return 'Before @gmail.com, use letters followed by numbers, like richa123@gmail.com.';
 }
 
 function wireSignupForm() {
   const form = document.getElementById('signup-form');
   if (!form) return;
 
-  const emailInput = form.querySelector('input[name="email"]');
-  const emailField = document.getElementById('email-field');
-  const emailErrorText = document.getElementById('email-error');
-
-  function validateEmail() {
-    const error = emailError(emailInput.value);
-    emailField.classList.toggle('invalid', Boolean(error));
-    emailErrorText.hidden = !error;
-    if (error) emailErrorText.textContent = error;
-    return !error;
+  // Checks a field on blur, then live while its message is showing, so the user sees exactly
+  // what to fix without being nagged mid-typing.
+  function liveCheck(name, check) {
+    const input = form.querySelector(`input[name="${name}"]`);
+    const field = document.getElementById(`${name}-field`);
+    const errorText = document.getElementById(`${name}-error`);
+    const validate = () => {
+      const error = check(input.value);
+      field.classList.toggle('invalid', Boolean(error));
+      errorText.hidden = !error;
+      if (error) errorText.textContent = error;
+      return !error;
+    };
+    input.addEventListener('input', () => {
+      if (errorText.hidden === false) validate();
+    });
+    input.addEventListener('blur', validate);
+    return { input, validate, error: () => check(input.value) };
   }
 
-  emailInput.addEventListener('input', () => {
-    if (emailErrorText.hidden === false) validateEmail();
+  const usernameCheck = liveCheck('username', usernameError);
+  const emailCheck = liveCheck('email', emailError);
+  const passwordCheck = liveCheck('password', (value) => {
+    if (!value) return 'Password is required.';
+    return value.length < 8 ? 'Password must be at least 8 characters.' : null;
   });
-  emailInput.addEventListener('blur', validateEmail);
+  const confirmCheck = liveCheck('confirmPassword', (value) => {
+    if (!value) return 'Please confirm your password.';
+    return value !== passwordCheck.input.value ? 'Passwords do not match.' : null;
+  });
+  const dateOfBirthCheck = liveCheck('dateOfBirth', dateOfBirthError);
+  const checks = [usernameCheck, emailCheck, passwordCheck, confirmCheck, dateOfBirthCheck];
+
+  // Re-check "Passwords do not match" when the first password changes, once confirm has a value.
+  passwordCheck.input.addEventListener('input', () => {
+    if (confirmCheck.input.value) confirmCheck.validate();
+  });
+  // Date pickers often change without a blur, so check as soon as a date is picked.
+  dateOfBirthCheck.input.addEventListener('change', dateOfBirthCheck.validate);
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -148,26 +152,11 @@ function wireSignupForm() {
     const confirmPassword = formData.get('confirmPassword');
     const dateOfBirth = formData.get('dateOfBirth');
 
-    if (!username || !email || !password || !confirmPassword || !dateOfBirth) {
-      showToast('Please fill in all fields.', { isError: true });
-      return;
-    }
-    if (!validateEmail()) {
-      showToast(emailError(email), { isError: true });
-      emailInput.focus();
-      return;
-    }
-    if (password !== confirmPassword) {
-      showToast('Passwords do not match.', { isError: true });
-      return;
-    }
-    if (password.length < 8) {
-      showToast('Password must be at least 8 characters.', { isError: true });
-      return;
-    }
-    const dobError = dateOfBirthError(dateOfBirth);
-    if (dobError) {
-      showToast(dobError, { isError: true });
+    // Check every field so each problem shows under its own input, then point at the first one.
+    const failed = checks.filter((check) => !check.validate());
+    if (failed.length) {
+      showToast(failed[0].error(), { isError: true });
+      failed[0].input.focus();
       return;
     }
 
